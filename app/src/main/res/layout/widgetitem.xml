@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetitem1"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:background="@drawable/nice_selector">
+
+
+
+
+
+        <TextView
+            android:id="@+id/widgetTime"
+            android:layout_marginLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:textColor="#ff0011"
+            android:text="sbsbsb" />
+
+        <TextView
+            android:id="@+id/widgetTitle"
+            android:layout_marginLeft="8dp"
+            android:layout_width="match_parent"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="#09A001"
+            android:text="jisuhini"
+            />
+    </LinearLayout>

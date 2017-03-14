@@ -1,0 +1,134 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.panda.newevent.Fragment.DetailFragment">
+    <LinearLayout
+        android:id="@+id/titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+
+        android:orientation="horizontal"
+        android:background="#9AFF9A"
+        android:focusable="true"
+        >
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_weight="0.5"
+
+            android:layout_width="wrap_content"
+            android:src="@drawable/back"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="标题"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/editButton"
+            android:layout_weight="0.5"
+
+            android:layout_width="wrap_content"
+            android:src="@drawable/save"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+    <EditText
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+
+        android:id="@+id/titletext"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="备忘标题"
+        android:background="@drawable/edittextshape"
+        />
+
+    <ScrollView
+        android:layout_marginTop="15dp"
+        android:id="@+id/detailScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null">
+        <!-- TODO: Update blank fragment layout -->
+        <EditText
+            android:focusable="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
+            android:id="@+id/detailTextContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:lines="15"
+            android:inputType="textMultiLine"
+            android:textIsSelectable="false"
+            android:hint="无内容"
+            android:background="@drawable/edittextshape"
+            />
+    </ScrollView>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        >
+    <CheckBox
+        android:id="@+id/rankFirst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:text="紧急事件"
+        android:textColor="#EE0000"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            >
+            <CheckBox
+                android:id="@+id/rankSecond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="一般事件"
+                android:textColor="#EEEE00"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            >
+            <CheckBox
+                android:id="@+id/rankThird"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="轻松事件"
+                android:textColor="#7cfc00"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
