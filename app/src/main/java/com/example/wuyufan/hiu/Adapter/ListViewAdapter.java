@@ -50,14 +50,6 @@ public class ListViewAdapter extends BaseAdapter {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case 1:
-                    if (TAG == false) {
-                        TAG = !TAG;
-                        viewHolder.imageLike.setImageResource(R.drawable.like_change);
-                    } else {
-                        TAG = !TAG;
-                        viewHolder.imageLike.setImageResource(R.drawable.like);
-                    }break;
                 case 2:
                     Intent intent=new Intent();
                     intent.setAction("adapterToactivity");
@@ -88,7 +80,7 @@ public class ListViewAdapter extends BaseAdapter {
         Log.i(">>getView", "success" + "  " + i);
         System.out.print("" + i);
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        ViewHolder holder;
+        final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
             view = layoutInflater.inflate(R.layout.friend_circle_listitem, null);
@@ -103,14 +95,20 @@ public class ListViewAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         holder.imageLike.setImageResource(R.drawable.like);
-        viewHolder = holder;
         holder.imageLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handler handler = new handler();
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessage(msg);
+//                handler handler = new handler();
+//                Message msg = new Message();
+//                msg.what = 1;
+//                handler.sendMessage(msg);
+                if (TAG == false) {
+                    TAG = !TAG;
+                    holder.imageLike.setImageResource(R.drawable.like_change);
+                } else {
+                    TAG = !TAG;
+                    holder.imageLike.setImageResource(R.drawable.like);
+                }
             }
         });
         holder.iamgePerson.setOnClickListener(new View.OnClickListener() {

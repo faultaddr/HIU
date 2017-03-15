@@ -28,6 +28,7 @@ import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobRealTimeData;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.ValueEventListener;
@@ -54,7 +55,8 @@ public class FriendFragment extends Fragment {
     private ArrayList<String> mTime = new ArrayList<>();
     private ArrayList<String> mContent = new ArrayList<>();
     private ArrayList<String> mInterest = new ArrayList<>();
-
+    //标志位
+    private static boolean TAG=false;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -99,11 +101,15 @@ public class FriendFragment extends Fragment {
                 Log.d("bmob", "连接成功:" + ex.getMessage());
             }
         });
-        mInterest.add("运动");
-        mContent.add("我想去打球");
-        mTime.add("3月十号晚上");
-        mUserName.add("潘云逸");
-        //rtd.subTableUpdate("Info");
+//        mInterest.add("运动");
+//        mContent.add("我想去打球");
+//        mTime.add("3月十号晚上");
+//        mUserName.add("潘云逸");
+        if(rtd.isConnected()){
+            // 监听表更新
+            Log.i("jjj","sfa");
+            rtd.subTableUpdate("Info");
+        }
 
         AsyncTask asyncTask = null;
         asyncTask = new loadData();
@@ -177,7 +183,7 @@ public class FriendFragment extends Fragment {
             Log.i(">>doInBackground","success");
             BmobQuery<Info> query = new BmobQuery<Info>();
 //查询playerName叫“比目”的数据
-            query.addWhereEqualTo("UserName", "123");
+            query.addWhereEqualTo("UserName", 	"cn.bmob.v3.BmobUser@6dbf645");
 
 //返回50条数据，如果不加上这条语句，默认返回10条数据
             query.setLimit(100);
@@ -197,17 +203,20 @@ public class FriendFragment extends Fragment {
                             mTime.add(info.getTime());
                             //info.getCreatedAt();
                             //获得createdAt数据创建时间（注意是：createdAt，不是createAt）
-
+                            TAG=true;
                         }
                     } else {
+                        TAG=true;
                         Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                     }
                 }
             });
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while(TAG!=true){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             return true;
         }

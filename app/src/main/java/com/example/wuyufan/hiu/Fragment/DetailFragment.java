@@ -1,19 +1,26 @@
 package com.example.wuyufan.hiu.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wuyufan.hiu.Database.Info;
+import com.example.wuyufan.hiu.MainActivity;
 import com.example.wuyufan.hiu.R;
 
 import java.util.Calendar;
@@ -25,13 +32,17 @@ import cn.bmob.v3.listener.SaveListener;
 /**
 
  */
-public class DetailFragment extends Fragment implements View.OnClickListener{
+public class DetailFragment extends Fragment {
     //view 声明
     private TextView textContent;
     private Button buttonSubmit;
     private DatePicker datePicker;
+    private Spinner spinner;
     // String 初始化
     private String Content;//内容
+    private String Interest;//兴趣记录
+
+    String []item={"运动", "约炮", "搞基", "学习", "约饭", "电影", "博物馆", "瞎逛", "讲座", "实习"};
     // Integer 初始化
     private static int year,month,day;
 
@@ -58,7 +69,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
@@ -66,8 +77,22 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         textContent=(TextView) view.findViewById(R.id.content_et);
         buttonSubmit=(Button)view.findViewById(R.id.send_btn);
         datePicker=(DatePicker)view.findViewById(R.id.datePicker);
+        spinner=(Spinner)view.findViewById(R.id.spinner);
         Calendar calendar= Calendar.getInstance();
 
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Interest=item[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         datePicker.init((int) calendar.get(Calendar.YEAR), (int) calendar.get(Calendar.MONTH), (int) calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
             @Override
@@ -77,7 +102,43 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
                 day=i2;
             }
         });
-        buttonSubmit.setOnClickListener(this);
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(">>button","onClick");
+                Content=textContent.getText().toString();
+                if(Content.equals("")){
+                    Toast.makeText(getContext(),"请不要发送空消息",Toast.LENGTH_LONG).show();
+
+                }
+                else{
+                    Info info=new Info();
+                    info.setTime(year+month+day+"");
+                    info.setUserName(BmobUser.getCurrentUser().toString());
+                    info.setContent(Content);
+                    info.setInterest(Interest);
+
+                    //TODO-LIST: 把interest在一开始就写入User数据库并且在本地保存一个备份，每次读写的时候就从本地拿，本地没有再从网络上读取。
+                    info.save(new SaveListener<String>() {
+
+                        @Override
+                        public void done(String objectId, BmobException e) {
+                            if(e==null){
+                                Toast.makeText(getContext(),"创建数据成功：" + objectId,Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(getContext(),"网络连接不畅或者不符合国家有关规定：" + objectId,Toast.LENGTH_LONG).show();
+                                Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+                            }
+                            Intent intent=new Intent();
+                            intent.setAction("detailToactivity");
+                            intent.setClass(getContext(),MainActivity.class);
+                            getContext().startActivity(intent);
+
+                        }
+                    });
+                }
+            }
+        });
         return view;
     }
 
@@ -100,34 +161,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener{
         mListener = null;
     }
 
-    @Override
-    public void onClick(View view) {
-        Content=textContent.getText().toString();
-        if(Content.equals("")){
-            Toast.makeText(getContext(),"请不要发送空消息",Toast.LENGTH_LONG).show();
-
-        }
-        else{
-            Info info=new Info();
-            info.setTime(year+month+day+"");
-            info.setUserName(BmobUser.getCurrentUser().toString());
-            info.setContent(Content);
-            info.setInterest("运动");
-            //TODO-LIST: 把interest在一开始就写入User数据库并且在本地保存一个备份，每次读写的时候就从本地拿，本地没有再从网络上读取。
-            info.save(new SaveListener<String>() {
-
-                @Override
-                public void done(String objectId, BmobException e) {
-                    if(e==null){
-                        Toast.makeText(getContext(),"创建数据成功：" + objectId,Toast.LENGTH_LONG);
-                    }else{
-                        Toast.makeText(getContext(),"网络连接不畅或者不符合国家有关规定：" + objectId,Toast.LENGTH_LONG);
-                        Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
-                    }
-                }
-            });
-        }
-    }
 
     /**
      * This interface must be implemented by activities that contain this

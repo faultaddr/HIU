@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="items">
+        <item>运动</item>
+        <item>约炮 </item>
+        <item>搞基</item>
+        <item>学习</item>
+        <item>约饭</item>
+        <item>电影</item>
+        <item>博物馆 </item>
+        <item>瞎逛</item>
+        <item>讲座</item>
+        <item>实习</item>
+    </string-array>
+</resources>

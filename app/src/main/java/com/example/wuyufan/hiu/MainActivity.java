@@ -49,13 +49,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                DetailFragment detailFragment=DetailFragment.newInstance();
-                FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.detailContent, detailFragment,"DetailFragment");
-                fragmentTransaction.commit();
-                fragmentTransaction.show(detailFragment);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                DetailFragment detailFragment = DetailFragment.newInstance();
+                try {
+
+
+                    fragmentTransaction.replace(R.id.detailContent, detailFragment, "DetailFragment");
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentTransaction.show(detailFragment);
+                    //fragmentTransaction.show(chatFragment);
+                    //fragmentTransaction.hide(getSupportFragmentManager().findFragmentByTag("FriendFragment"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+
+
+                }
 
             }
         });
@@ -108,22 +118,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         if(getIntent().getAction()!=null){
             Log.i(">>getIntent","!=null");
-            FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-            ChatFragment chatFragment=ChatFragment.newInstance();
-            try {
+            if(getIntent().getAction().equals("adapterToactivity")) {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                ChatFragment chatFragment = ChatFragment.newInstance();
+                try {
 
 
-                fragmentTransaction.replace(R.id.detailContent,chatFragment,"ChatFragment");
+                    fragmentTransaction.replace(R.id.detailContent, chatFragment, "ChatFragment");
+                    //fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                    fragmentTransaction.show(chatFragment);
+                    //fragmentTransaction.show(chatFragment);
+                    //fragmentTransaction.hide(getSupportFragmentManager().findFragmentByTag("FriendFragment"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+
+                    fab.hide();
+                }
+            }
+            if(getIntent().getAction().equals("detailToactivity")){
+                FriendFragment friendFragment = FriendFragment.newInstance();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.detailContent, friendFragment, "FriendFragment");
                 fragmentTransaction.commit();
-                //fragmentTransaction.hide(getSupportFragmentManager().findFragmentByTag("FriendFragment"));
-            }catch (Exception e){
-                e.printStackTrace();
+                fragmentTransaction.show(friendFragment);
             }
-            finally {
-                fragmentTransaction.show(chatFragment);
-                fab.hide();
-            }
-
         }
         else {
             Log.i(">>onCreat", "success");
