@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(">>getIntent","!=null");
             if(getIntent().getAction().equals("adapterToactivity")) {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                ChatFragment chatFragment = ChatFragment.newInstance();
+                ChatFragment chatFragment = ChatFragment.newInstance(getIntent().getExtras());
                 try {
 
 

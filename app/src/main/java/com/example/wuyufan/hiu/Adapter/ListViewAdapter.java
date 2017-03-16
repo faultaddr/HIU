@@ -2,6 +2,7 @@ package com.example.wuyufan.hiu.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
@@ -54,6 +55,9 @@ public class ListViewAdapter extends BaseAdapter {
                     Intent intent=new Intent();
                     intent.setAction("adapterToactivity");
                     intent.setClass(mContext,MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("UserName", msg.arg1 + "");
+                    intent.putExtra("UserName", bundle);
                     mContext.startActivity(intent);
             }
         }
@@ -111,12 +115,14 @@ public class ListViewAdapter extends BaseAdapter {
                 }
             }
         });
+        final int pos = i;
         holder.iamgePerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handler handler=new handler();
                 Message msg=new Message();
                 msg.what=2;
+                msg.arg1 = pos;
                 handler.sendMessage(msg);
             }
         });
