@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.wuyufan.hiu.Fragment.ChatFragment;
 import com.example.wuyufan.hiu.Fragment.DetailFragment;
 import com.example.wuyufan.hiu.Fragment.FriendFragment;
+import com.example.wuyufan.hiu.Fragment.GridFragment;
 import com.example.wuyufan.hiu.Tools.ACache;
 import com.example.wuyufan.hiu.Tools.bitmapRound;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView imageNav;
     private TextView userNameNav;
     private ImageView exitButton;
+    public static int position = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,15 +50,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
+                DetailFragment detailFragment = DetailFragment.newInstance(bundle);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                DetailFragment detailFragment = DetailFragment.newInstance();
+
                 try {
 
 
                     fragmentTransaction.replace(R.id.detailContent, detailFragment, "DetailFragment");
                     fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
+                    fragmentTransaction.commitAllowingStateLoss();
                     fragmentTransaction.show(detailFragment);
                     //fragmentTransaction.show(chatFragment);
                     //fragmentTransaction.hide(getSupportFragmentManager().findFragmentByTag("FriendFragment"));
@@ -138,20 +142,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
             if(getIntent().getAction().equals("detailToactivity")){
-                FriendFragment friendFragment = FriendFragment.newInstance();
+                Log.i(">>detailToactivity", "success");
+                FriendFragment friendFragment = FriendFragment.newInstance(null);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.detailContent, friendFragment, "FriendFragment");
+                fragmentTransaction.add(R.id.detailContent, friendFragment, "FriendFragment");
                 fragmentTransaction.commit();
                 fragmentTransaction.show(friendFragment);
+                //FriendFragment friendFragment = FriendFragment.newInstance();
+
             }
         }
         else {
             Log.i(">>onCreat", "success");
-            FriendFragment friendFragment = FriendFragment.newInstance();
+            GridFragment gridFragment = GridFragment.newInstance();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.detailContent, friendFragment, "FriendFragment");
+            fragmentTransaction.add(R.id.detailContent, gridFragment, "GridFragment");
             fragmentTransaction.commit();
-            fragmentTransaction.show(friendFragment);
+            fragmentTransaction.show(gridFragment);
         }
 
     }
@@ -199,6 +206,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Intent intent = new Intent();
+            intent.setClass(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 

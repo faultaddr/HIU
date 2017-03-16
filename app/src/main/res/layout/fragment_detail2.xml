@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="fill_horizontal"
             >
+            <!--
         <Spinner
             android:id="@+id/spinner"
             android:spinnerMode="dropdown"
@@ -58,6 +59,7 @@
             android:layout_height="wrap_content">
 
         </Spinner>
+        -->
         <DatePicker
             android:id="@+id/datePicker"
             android:calendarViewShown="false"

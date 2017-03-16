@@ -9,26 +9,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.wuyufan.hiu.Adapter.ListViewAdapter;
 import com.example.wuyufan.hiu.Database.Info;
+import com.example.wuyufan.hiu.Model.LoadingView;
+import com.example.wuyufan.hiu.Model.MyListView;
 import com.example.wuyufan.hiu.R;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobRealTimeData;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.ValueEventListener;
@@ -48,18 +45,18 @@ public class FriendFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     //View 初始化
-    private ListView listView;
+    private MyListView listView;
     private ListViewAdapter listViewAdapter;
     //数据初始化
     private ArrayList<String> mUserName = new ArrayList<>();
     private ArrayList<String> mTime = new ArrayList<>();
     private ArrayList<String> mContent = new ArrayList<>();
     private ArrayList<String> mInterest = new ArrayList<>();
+    String[] item = {"运动", "约炮", "搞基", "学习", "约饭", "电影", "博物馆", "瞎逛", "讲座", "实习"};
     //标志位
-    private static boolean TAG=false;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static boolean TAG = false;//注意这个标志位是static的所以在重新生成时要注意TAG值的问题。
+    private static int interestId;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -75,10 +72,11 @@ public class FriendFragment extends Fragment {
      * @return A new instance of fragment FriendFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FriendFragment newInstance() {
+    public static FriendFragment newInstance(Bundle bundle) {
         FriendFragment fragment = new FriendFragment();
-        Bundle args = new Bundle();
-
+        if (bundle != null) {
+            interestId = bundle.getInt("position");
+        }
         //fragment.setArguments(args);
         return fragment;
     }
@@ -110,19 +108,31 @@ public class FriendFragment extends Fragment {
             Log.i("jjj","sfa");
             rtd.subTableUpdate("Info");
         }
-
         AsyncTask asyncTask = null;
         asyncTask = new loadData();
         asyncTask.execute();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
-        listView = (ListView) view.findViewById(R.id.friend_circle);
+        listView = (MyListView) view.findViewById(R.id.friend_circle);
+        LoadingView mLoadingView = (LoadingView) view.findViewById(R.id.loading);
+        listView.setEmptyView(mLoadingView);
 
+        //listView.addHeaderView();
         // Inflate the layout for this fragment
+        listView.setonRefreshListener(new MyListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                AsyncTask asyncTask = null;
+                asyncTask = new loadData();
+                asyncTask.execute();
+            }
+        });
+
         return view;
     }
 
@@ -171,11 +181,15 @@ public class FriendFragment extends Fragment {
 
             Log.i(">>onPostExecute","success");
             Log.i(">>mUserName",mUserName.size()+"");
+            Log.i("InterestId", interestId + "");
             //ListViewAdapter listViewAdapter=new ListViewAdapter(getActivity(), mUserName, mTime, mContent, mInterest);
+            listView.getEmptyView().setVisibility(View.INVISIBLE);
             listViewAdapter=new ListViewAdapter(getActivity(), mUserName, mTime, mContent, mInterest);
             listView.setAdapter(listViewAdapter);
-            setListViewHeight(listView);
+            //setListViewHeight(listView);
             //listView.postInvalidate();//listView 刷新
+            listView.onRefreshComplete();
+
         }
 
         @Override
@@ -183,7 +197,7 @@ public class FriendFragment extends Fragment {
             Log.i(">>doInBackground","success");
             BmobQuery<Info> query = new BmobQuery<Info>();
 //查询playerName叫“比目”的数据
-            query.addWhereEqualTo("UserName", 	"cn.bmob.v3.BmobUser@6dbf645");
+            query.addWhereEqualTo("Interest", item[interestId]);
 
 //返回50条数据，如果不加上这条语句，默认返回10条数据
             query.setLimit(100);
@@ -203,8 +217,9 @@ public class FriendFragment extends Fragment {
                             mTime.add(info.getTime());
                             //info.getCreatedAt();
                             //获得createdAt数据创建时间（注意是：createdAt，不是createAt）
-                            TAG=true;
+
                         }
+                        TAG = true;
                     } else {
                         TAG=true;
                         Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
@@ -218,6 +233,7 @@ public class FriendFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+            TAG = false;
             return true;
         }
     }

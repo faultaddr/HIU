@@ -45,7 +45,7 @@ public class DetailFragment extends Fragment {
     String []item={"运动", "约炮", "搞基", "学习", "约饭", "电影", "博物馆", "瞎逛", "讲座", "实习"};
     // Integer 初始化
     private static int year,month,day;
-
+    private static int position;
 
     private OnFragmentInteractionListener mListener;
 
@@ -55,9 +55,9 @@ public class DetailFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance() {
+    public static DetailFragment newInstance(Bundle bundle) {
         DetailFragment fragment = new DetailFragment();
-
+        position = bundle.getInt("position");
         return fragment;
     }
 
@@ -77,26 +77,28 @@ public class DetailFragment extends Fragment {
         textContent=(TextView) view.findViewById(R.id.content_et);
         buttonSubmit=(Button)view.findViewById(R.id.send_btn);
         datePicker=(DatePicker)view.findViewById(R.id.datePicker);
-        spinner=(Spinner)view.findViewById(R.id.spinner);
+        //spinner=(Spinner)view.findViewById(R.id.spinner);
         Calendar calendar= Calendar.getInstance();
 
-
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Interest=item[i];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Interest=item[i];
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         datePicker.init((int) calendar.get(Calendar.YEAR), (int) calendar.get(Calendar.MONTH), (int) calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                Log.i(">>dataPicker", i + " " + i1 + " " + i2 + " ");
                 year=i;
                 month=i1;
                 day=i2;
@@ -113,10 +115,11 @@ public class DetailFragment extends Fragment {
                 }
                 else{
                     Info info=new Info();
-                    info.setTime(year+month+day+"");
-                    info.setUserName(BmobUser.getCurrentUser().toString());
+                    info.setTime(year + "/" + month + "/" + day + "/");
+                    info.setUserName(BmobUser.getCurrentUser().getUsername());
                     info.setContent(Content);
-                    info.setInterest(Interest);
+                    //info.setInterest(Interest);//这是用Spinner的
+                    info.setInterest(item[position]);
 
                     //TODO-LIST: 把interest在一开始就写入User数据库并且在本地保存一个备份，每次读写的时候就从本地拿，本地没有再从网络上读取。
                     info.save(new SaveListener<String>() {
@@ -129,16 +132,24 @@ public class DetailFragment extends Fragment {
                                 Toast.makeText(getContext(),"网络连接不畅或者不符合国家有关规定：" + objectId,Toast.LENGTH_LONG).show();
                                 Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
                             }
-                            Intent intent=new Intent();
-                            intent.setAction("detailToactivity");
-                            intent.setClass(getContext(),MainActivity.class);
-                            getContext().startActivity(intent);
+
+//                            Intent intent=new Intent();
+//                            intent.setAction("detailToactivity");
+//                            intent.setClass(getContext(),MainActivity.class);
+//                            getContext().startActivity(intent);
+//                            FriendFragment friendFragment=FriendFragment.newInstance(null);
+//                            FragmentTransaction fragmentTransaction=getActivity().getSupportFragmentManager().beginTransaction();
+//                            fragmentTransaction.hide(getActivity().getSupportFragmentManager().findFragmentByTag("DetailFragment"));
+//                            fragmentTransaction.add(R.id.detailContent,friendFragment);
+//                            fragmentTransaction.commit();
+//                            fragmentTransaction.show(friendFragment);
 
                         }
                     });
                 }
             }
         });
+
         return view;
     }
 
